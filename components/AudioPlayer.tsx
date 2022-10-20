@@ -12,11 +12,24 @@ interface IProps {
 const AudioPlayer = ({ tracks }: IProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [volume, setVolume] = useState<number>(0.5);
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const [trackProgress, setTrackProgress] = useState<number>(0);
   const { audioSrc } = tracks;
 
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>();
+
+  const startTimer = () => {
+    // Clear any timers already running
+    clearInterval(intervalRef.current);
+
+    // every second that passes update interval
+    intervalRef.current = setInterval(() => {
+      if (audioRef.current !== null) {
+        setTrackProgress(Math.round(audioRef.current.currentTime));
+      }
+    }, 1000);
+  };
 
   useEffect(() => {
     audioRef.current = new Audio(audioSrc);
@@ -26,6 +39,7 @@ const AudioPlayer = ({ tracks }: IProps) => {
   useEffect(() => {
     if (audioRef.current !== null) {
       if (isPlaying) {
+        startTimer();
         audioRef.current.play();
       } else {
         audioRef.current.pause();
@@ -41,12 +55,6 @@ const AudioPlayer = ({ tracks }: IProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [volume]);
 
-  useEffect(() => {
-    if (audioRef.current !== null) {
-      setElapsedTime(audioRef.current.currentTime);
-    }
-  }, [elapsedTime]);
-
   return (
     <div>
       <AudioControls
@@ -55,7 +63,7 @@ const AudioPlayer = ({ tracks }: IProps) => {
         currentVolume={volume}
         setVolume={setVolume}
       />
-      <div>time elapsed: {`${elapsedTime}`}</div>
+      <div>time elapsed: {`${trackProgress}`}</div>
     </div>
   );
 };

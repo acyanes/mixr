@@ -1,5 +1,3 @@
-import Button from './Button';
-
 interface IProps {
   isPlaying: any;
   onPlayPauseClick: any;

@@ -1,13 +1,8 @@
 import type { NextPage } from 'next';
 import AudioPlayer from '../components/AudioPlayer';
-import song from '../public/testAudio.mp3';
+import Box from '../components/Box';
 
-//tracks: {
-//    title: string;
-//    artist: string;
-//    audioSrc: string;
-//    image: string;
-//}
+import song from '../public/testAudio.mp3';
 const track = {
   title: 'foo',
   artist: 'bar',
@@ -18,6 +13,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <AudioPlayer tracks={track} />
+      <Box />
     </div>
   );
 };
